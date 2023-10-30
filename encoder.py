@@ -1,5 +1,5 @@
 import numpy as np
-from numpy.polynomial import Polynomial
+from numpy.polynomial import polynomial
 from typing import Any
 from utils import coordinate_wise_random_rounding
 
@@ -33,7 +33,7 @@ class Encoder:
 
         return matrix
 
-    def sigma_inverse(self, b: np.ndarray[Any, np.dtype[np.complex128]]) -> Polynomial:
+    def sigma_inverse(self, b: np.ndarray[Any, np.dtype[np.complex128]]) -> polynomial.Polynomial:
         # Melakukan encoding dari vector ke polynomial menggunakan M-th root of unity
         A = self.vandermonde()
 
@@ -41,9 +41,9 @@ class Encoder:
         coefficients = np.linalg.solve(A, b)
 
         # Mengembalikan polynomial dengan koefisien yang telah ditemukan
-        return Polynomial(coefficients)
+        return polynomial.Polynomial(coefficients)
 
-    def sigma(self, p: Polynomial) -> np.ndarray[Any, np.dtype[np.complex128]]:
+    def sigma(self, p: polynomial.Polynomial) -> np.ndarray[Any, np.dtype[np.complex128]]:
         # Melakukan decoding dari polynomial ke vector dengan mengaplikasikan ke M-th root of unity
         outputs = np.array([], dtype=np.complex128)
         N = self.M // 2
@@ -89,7 +89,7 @@ class Encoder:
 
         return np.matmul(self.sigma_R_basis.transpose(), rounded_coordinates)
 
-    def encode(self, z: np.ndarray[Any, np.dtype[np.complex128]]) -> Polynomial:
+    def encode(self, z: np.ndarray[Any, np.dtype[np.complex128]]) -> polynomial.Polynomial:
         # Melakukan encoding dari vector ke polynomial
         pi_z = self.pi_inverse(z)
         scaled_pi_z = np.array(self.scale * pi_z, dtype=np.complex128)
@@ -98,14 +98,14 @@ class Encoder:
 
         # Round coefficient to the nearest integer
         coefficients = np.round(np.real(raw_p.coef), 0).astype(np.int64)
-        p = Polynomial(coefficients)
+        p = polynomial.Polynomial(coefficients)
 
         return p
 
-    def decode(self, p: Polynomial) -> np.ndarray[Any, np.dtype[np.complex128]]:
+    def decode(self, p: polynomial.Polynomial) -> np.ndarray[Any, np.dtype[np.complex128]]:
         # Melakukan decoding dari polynomial ke vector
         coefficients = np.array(p.coef / self.scale, dtype=np.complex128)
-        rescaled_p = Polynomial(coefficients)
+        rescaled_p = polynomial.Polynomial(coefficients)
         z = self.sigma(rescaled_p)
         pi_z = self.pi(z)
 

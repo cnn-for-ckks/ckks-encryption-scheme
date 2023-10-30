@@ -1,10 +1,10 @@
 import numpy as np
 from typing import Any
 
-# Rounds coordinates randonmly (Learning with Errors)
-
 
 def coordinate_wise_random_rounding(coordinates: np.ndarray[Any, np.dtype[np.float64]]) -> np.ndarray[Any, np.dtype[np.int64]]:
+    # Rounds coordinates randomly (Learning with Errors)
+
     r = np.array(coordinates - np.floor(coordinates), dtype=np.float64)
     f = np.array(
         [
