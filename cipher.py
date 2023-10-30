@@ -1,16 +1,19 @@
 import numpy as np
 from numpy.polynomial import polynomial
 from typing import Any, Tuple
+from pydantic import PositiveInt
+
+from defined_types import ValidDimension
 from encoder import Encoder
 from key import Key
 
 
 class Cipher:
-    M: int
+    M: ValidDimension
     encoder: Encoder
     key: Key
 
-    def __init__(self, M: int, scale: int, coef_size: int) -> None:
+    def __init__(self, M: ValidDimension, scale: PositiveInt, coef_size: PositiveInt) -> None:
         self.M = M
         self.encoder = Encoder(M, scale)
         self.key = Key(M, coef_size)

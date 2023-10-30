@@ -1,21 +1,27 @@
 import numpy as np
 from numpy.polynomial import polynomial
 from typing import Any
+from pydantic import PositiveInt
+
+from defined_types import ValidDimension
 from utils import coordinate_wise_random_rounding
 
 
 class Encoder:
+    M: ValidDimension
+    scale: PositiveInt
     xi: np.complex128
-    M: int
     sigma_R_basis: np.ndarray[Any, np.dtype[np.complex128]]
-    scale: int
 
-    def __init__(self, M: int, scale: int) -> None:
+    def __init__(self, M: ValidDimension, scale: PositiveInt) -> None:
+        self.M = M
+        self.scale = scale
+
         # Atribut xi merupakan M-th root of unity yang akan digunakan sebagai basis perhitungan
         self.xi = np.exp(2 * np.pi * 1j / M)
-        self.M = M
+
+        # Atribut sigma_R_basis merupakan matriks basis dari sigma_R
         self.sigma_R_basis = self.vandermonde().transpose()
-        self.scale = scale
 
     def vandermonde(self) -> np.ndarray[Any, np.dtype[np.complex128]]:
         # Menghasilkan matriks Vandermonde
@@ -60,9 +66,9 @@ class Encoder:
 
     def pi(self, z: np.ndarray[Any, np.dtype[np.complex128]]) -> np.ndarray[Any, np.dtype[np.complex128]]:
         # Melakukan proyeksi dari vector H ke C^{N / 2}
-        N = self.M // 4
+        N_per_2 = self.M // 4
 
-        return z[:N]
+        return z[:N_per_2]
 
     def pi_inverse(self, z: np.ndarray[Any, np.dtype[np.complex128]]) -> np.ndarray[Any, np.dtype[np.complex128]]:
         # Melakukan proyeksi dari vector C^{N / 2} ke H

@@ -1,16 +1,19 @@
 import numpy as np
 from numpy.polynomial import polynomial
 from typing import Tuple
+from pydantic import PositiveInt
+
+from defined_types import ValidDimension
 from utils import coordinate_wise_random_rounding
 
 
 class Key:
-    M: int
-    coef_size: int
+    M: ValidDimension
+    coef_size: PositiveInt
     private_key: polynomial.Polynomial
     public_key: Tuple[polynomial.Polynomial, polynomial.Polynomial]
 
-    def __init__(self, M: int, coef_size: int) -> None:
+    def __init__(self, M: ValidDimension, coef_size: PositiveInt) -> None:
         self.M = M
         self.coef_size = coef_size
         self.private_key = self.generate_private_key()
