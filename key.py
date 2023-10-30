@@ -1,7 +1,7 @@
 import numpy as np
 from numpy.polynomial import polynomial
 from typing import Tuple
-from utils import coordinate_wise_random_rounding
+from utils import check_if_power_of_two, coordinate_wise_random_rounding
 
 
 class Key:
@@ -11,6 +11,9 @@ class Key:
     public_key: Tuple[polynomial.Polynomial, polynomial.Polynomial]
 
     def __init__(self, M: int, coef_size: int) -> None:
+        assert check_if_power_of_two(M), "M must be a power of two"
+        assert coef_size > 0, "coef_size must be positive"
+
         self.M = M
         self.coef_size = coef_size
         self.private_key = self.generate_private_key()

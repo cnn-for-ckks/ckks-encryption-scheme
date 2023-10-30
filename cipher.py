@@ -3,6 +3,7 @@ from numpy.polynomial import polynomial
 from typing import Any, Tuple
 from encoder import Encoder
 from key import Key
+from utils import check_if_power_of_two
 
 
 class Cipher:
@@ -11,6 +12,10 @@ class Cipher:
     key: Key
 
     def __init__(self, M: int, scale: int, coef_size: int) -> None:
+        assert check_if_power_of_two(M), "M must be a power of two"
+        assert scale > 0, "scale must be positive"
+        assert coef_size > 0, "coef_size must be positive"
+
         self.M = M
         self.encoder = Encoder(M, scale)
         self.key = Key(M, coef_size)

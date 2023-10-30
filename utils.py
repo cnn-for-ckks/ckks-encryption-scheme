@@ -21,3 +21,7 @@ def coordinate_wise_random_rounding(coordinates: np.ndarray[Any, np.dtype[np.flo
     ]
 
     return np.array(int_coordinates, dtype=np.int64)
+
+
+def check_if_power_of_two(number: int) -> bool:
+    return number & (number - 1) == 0 and number > 1
