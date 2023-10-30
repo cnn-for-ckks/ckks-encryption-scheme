@@ -1,19 +1,16 @@
 import numpy as np
 from numpy.polynomial import polynomial
 from typing import Any
-from pydantic import PositiveInt
-
-from defined_types import ValidDimension
 from utils import coordinate_wise_random_rounding
 
 
 class Encoder:
-    M: ValidDimension
-    scale: PositiveInt
+    M: int
+    scale: int
     xi: np.complex128
     sigma_R_basis: np.ndarray[Any, np.dtype[np.complex128]]
 
-    def __init__(self, M: ValidDimension, scale: PositiveInt) -> None:
+    def __init__(self, M: int, scale: int) -> None:
         self.M = M
         self.scale = scale
 
