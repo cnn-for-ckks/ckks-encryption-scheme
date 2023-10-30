@@ -1,7 +1,7 @@
-from ast import Tuple
 import numpy as np
 from numpy.polynomial import polynomial
 from typing import Tuple
+from utils import coordinate_wise_random_rounding
 
 
 class Key:
@@ -32,7 +32,7 @@ class Key:
         A = polynomial.Polynomial(coefA)
 
         # Menghasilkan noise
-        coefE = np.round(np.random.normal(-self.coef_size, self.coef_size, N))
+        coefE = coordinate_wise_random_rounding(np.random.normal(0, 1, N))
         E = polynomial.Polynomial(coefE)
 
         # Menghasilkan public key

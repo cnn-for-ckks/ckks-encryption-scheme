@@ -8,9 +8,9 @@ class Encoder:
     xi: np.complex128
     M: int
     sigma_R_basis: np.ndarray[Any, np.dtype[np.complex128]]
-    scale: float
+    scale: int
 
-    def __init__(self, M: int, scale: float) -> None:
+    def __init__(self, M: int, scale: int) -> None:
         # Atribut xi merupakan M-th root of unity yang akan digunakan sebagai basis perhitungan
         self.xi = np.exp(2 * np.pi * 1j / M)
         self.M = M

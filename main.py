@@ -1,19 +1,18 @@
 import numpy as np
 from encoder import Encoder
 from key import Key
+from cipher import Cipher
 
 if __name__ == "__main__":
-    encoder = Encoder(M=8, scale=64.0)
+    np.random.seed(42)
 
-    z = np.array([3 + 4j, 2 - 1j], dtype=np.complex128)
-    print(f"z: {z}")
+    cipher = Cipher(M=8, scale=2**8, coef_size=2**8)
 
-    p = encoder.encode(z)
-    print(f"p: {p}")
+    plaintext = np.array([3 + 4j, 2 - 1j], dtype=np.complex128)
+    print(f"plaintext: {plaintext}")
 
-    decoded_z = encoder.decode(p)
-    print(f"decoded_z: {decoded_z}")
+    ciphertext = cipher.encrypt(plaintext)
+    print(f"ciphertext: ({ciphertext[0]}, {ciphertext[1]})")
 
-    key = Key(M=8, coef_size=2**6)
-    print(f"private_key: {key.private_key}")
-    print(f"public_key: ({key.public_key[0]}, {key.public_key[1]})")
+    deciphered = cipher.decrypt(ciphertext)
+    print(f"deciphered: {deciphered}")
