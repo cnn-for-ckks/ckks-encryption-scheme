@@ -80,8 +80,9 @@ class Cipher:
         )
 
         # Multiply p to ciphertext
-        # TODO: Do rescaling properly
         c = (B * p) % phi, (A * p) % phi
+
+        # TODO: Do rescaling
 
         return c
 
@@ -92,5 +93,25 @@ class Cipher:
 
         # Add ciphertexts
         c = B1 + B2, A1 + A2
+
+        return c
+
+    def multCiphertext(self, c1: Tuple[polynomial.Polynomial, polynomial.Polynomial], c2: Tuple[polynomial.Polynomial, polynomial.Polynomial]) -> Tuple[polynomial.Polynomial, polynomial.Polynomial, polynomial.Polynomial]:
+        # Unpack ciphertexts
+        B1, A1 = c1
+        B2, A2 = c2
+
+        # Get phi
+        N = self.M // 2
+        phi = polynomial.Polynomial(
+            [1 if i == 0 or i == N else 0 for i in range(N + 1)]
+        )
+
+        # Multiply ciphertexts
+        c = (B1 * B2) % phi, (B1 * A2 + A1 * B2) % phi, (A1 * A2) % phi
+
+        # TODO: Do relinearization
+
+        # TODO: Do rescaling
 
         return c
