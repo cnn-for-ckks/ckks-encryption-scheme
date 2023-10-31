@@ -38,10 +38,12 @@ class Key:
         coefE = coordinate_wise_random_rounding(np.random.normal(0, 1, N))
         E = polynomial.Polynomial(coefE)
 
-        # Menghasilkan public key
+        # Menghasilkan phi
         phi = polynomial.Polynomial(
             [1 if i == 0 or i == N else 0 for i in range(N + 1)]
         )
+
+        # Menghasilkan public key
         B = (-A * private_key + E) % phi
 
         return B, A
