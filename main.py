@@ -15,6 +15,9 @@ if __name__ == "__main__":
     pOperation = p1 * p2
     print(f"pOperation: {pOperation}")
 
+    # Border
+    print()
+
     c1 = cipher.encrypt(p1)
     B1, A1 = c1
     print(f"c1: ({B1}, {A1})")
@@ -23,9 +26,12 @@ if __name__ == "__main__":
     B2, A2 = c2
     print(f"c2: ({B2}, {A2})")
 
-    cOperation = cipher.multPlaintext(c1, p2)
+    cOperation = cipher.addCiphertext(c1, c2)
     BOperation, AOperation = cOperation
     print(f"cOperation: ({BOperation}, {AOperation})")
+
+    # Border
+    print()
 
     p1_deciphered = cipher.decrypt(c1)
     print(f"p1 deciphered: {p1_deciphered}")

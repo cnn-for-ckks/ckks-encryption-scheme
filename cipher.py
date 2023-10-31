@@ -9,6 +9,7 @@ from utils import check_if_power_of_two
 
 class Cipher:
     M: int
+    scale: int
     encoder: Encoder
     key: Key
 
@@ -18,6 +19,7 @@ class Cipher:
         assert coef_size > 0, "coef_size must be positive"
 
         self.M = M
+        self.scale = scale
         self.encoder = Encoder(M, scale)
         self.key = Key(M, coef_size)
 
@@ -71,8 +73,15 @@ class Cipher:
         # Encode z
         p = self.encoder.encode(z)
 
+        # Get phi
+        N = self.M // 2
+        phi = polynomial.Polynomial(
+            [1 if i == 0 or i == N else 0 for i in range(N + 1)]
+        )
+
         # Multiply p to ciphertext
-        c = B * p, A * p
+        # TODO: Do rescaling properly
+        c = (B * p) % phi, (A * p) % phi
 
         return c
 
