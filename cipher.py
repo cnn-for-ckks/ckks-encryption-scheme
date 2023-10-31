@@ -1,3 +1,4 @@
+from re import A
 import numpy as np
 from numpy.polynomial import polynomial
 from typing import Any, Tuple
@@ -28,7 +29,7 @@ class Cipher:
         p = self.encoder.encode(z)
 
         # Encrypt p
-        c = p + B, A
+        c = B + p, A
 
         return c
 
@@ -50,3 +51,37 @@ class Cipher:
         z = self.encoder.decode(p)
 
         return z
+
+    def addPlaintext(self, c: Tuple[polynomial.Polynomial, polynomial.Polynomial], z: np.ndarray[Any, np.dtype[np.complex128]]) -> Tuple[polynomial.Polynomial, polynomial.Polynomial]:
+        # Unpack ciphertext
+        B, A = c
+
+        # Encode z
+        p = self.encoder.encode(z)
+
+        # Add p to ciphertext
+        c = B + p, A
+
+        return c
+
+    def multPlaintext(self, c: Tuple[polynomial.Polynomial, polynomial.Polynomial], z: np.ndarray[Any, np.dtype[np.complex128]]) -> Tuple[polynomial.Polynomial, polynomial.Polynomial]:
+        # Unpack ciphertext
+        B, A = c
+
+        # Encode z
+        p = self.encoder.encode(z)
+
+        # Multiply p to ciphertext
+        c = B * p, A * p
+
+        return c
+
+    def addCiphertext(self, c1: Tuple[polynomial.Polynomial, polynomial.Polynomial], c2: Tuple[polynomial.Polynomial, polynomial.Polynomial]) -> Tuple[polynomial.Polynomial, polynomial.Polynomial]:
+        # Unpack ciphertexts
+        B1, A1 = c1
+        B2, A2 = c2
+
+        # Add ciphertexts
+        c = B1 + B2, A1 + A2
+
+        return c
