@@ -113,6 +113,7 @@ class Cipher:
                                        A1 * B2) % phi, (A1 * A2) % phi
 
         # Do relinearization
+        # TODO: Add big integer support
         D0Lin, D1Lin = D0 + ((D2 * BEva) % phi), D1 + ((D2 * AEva) % phi)
         c = D0Lin, D1Lin
 
