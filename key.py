@@ -6,16 +6,16 @@ from utils import check_if_power_of_two, coordinate_wise_random_rounding
 
 class Key:
     M: int
-    integer_scale: int
+    q0: int
     private_key: polynomial.Polynomial
     public_key: Tuple[polynomial.Polynomial, polynomial.Polynomial]
 
-    def __init__(self, M: int, integer_scale: int) -> None:
+    def __init__(self, M: int, q0: int) -> None:
         assert check_if_power_of_two(M), "M must be a power of two"
-        assert integer_scale > 0, "integer scale must be positive"
+        assert q0 > 0, "modulo q0 must be positive"
 
         self.M = M
-        self.integer_scale = integer_scale
+        self.q0 = q0
         self.private_key = self.generate_private_key()
         self.public_key = self.generate_public_key(self.private_key)
 
@@ -23,7 +23,7 @@ class Key:
         N = self.M // 2
 
         # Menghasilkan private key
-        coef = np.random.randint(0, self.integer_scale, N)
+        coef = np.random.randint(0, self.q0, N)
         return polynomial.Polynomial(coef)
 
     def generate_public_key(self, private_key: polynomial.Polynomial) -> Tuple[polynomial.Polynomial, polynomial.Polynomial]:
@@ -31,7 +31,7 @@ class Key:
         N = self.M // 2
 
         # Menghasilkan random polynomial
-        coefA = np.random.randint(0, self.integer_scale, N)
+        coefA = np.random.randint(0, self.q0, N)
         A = polynomial.Polynomial(coefA)
 
         # Menghasilkan noise
@@ -44,16 +44,19 @@ class Key:
         )
 
         # Menghasilkan public key
-        B = (-A * private_key + E) % phi
+        BRaw = (-A * private_key + E) % phi
+        B = polynomial.Polynomial(
+            [coef for coef in BRaw]
+        )
 
         return B, A
 
-    def generate_evaluation_key(self, private_key: polynomial.Polynomial) -> polynomial.Polynomial:
+    def generate_evaluation_key(self, private_key: polynomial.Polynomial) -> Tuple[polynomial.Polynomial, polynomial.Polynomial]:
         # Menghasilkan evaluation key
         N = self.M // 2
 
         # Menghasilkan random polynomial
-        coefA = np.random.randint(0, self.integer_scale, N)
+        coefA = np.random.randint(0, self.q0, N)
         A = polynomial.Polynomial(coefA)
 
         # Menghasilkan noise
@@ -66,6 +69,9 @@ class Key:
         )
 
         # Menghasilkan evaluation key
-        B = (-A * private_key + E + private_key * private_key) % phi
+        BRaw = (-A * private_key + E + private_key * private_key) % phi
+        B = polynomial.Polynomial(
+            [coef for coef in BRaw]
+        )
 
-        return B
+        return B, A

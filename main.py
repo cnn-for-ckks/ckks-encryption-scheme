@@ -4,7 +4,7 @@ from cipher import Cipher
 if __name__ == "__main__":
     np.random.seed(42)
 
-    cipher = Cipher(M=8, integer_scale=2**8, decimal_scale=2**8)
+    cipher = Cipher(M=8, q0=2**16, delta=2**32)
 
     BPublic, APublic = cipher.key.public_key
     print(f"public key: ({BPublic}, {APublic})")
@@ -35,7 +35,7 @@ if __name__ == "__main__":
     B2, A2 = c2
     print(f"c2: ({B2}, {A2})")
 
-    cOperation = cipher.addCiphertext(c1, c2)
+    cOperation = cipher.multPlaintext(c1, p2)
     BOperation, AOperation = cOperation
     print(f"cOperation: ({BOperation}, {AOperation})")
 

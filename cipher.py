@@ -3,25 +3,22 @@ from numpy.polynomial import polynomial
 from typing import Any, Tuple
 from encoder import Encoder
 from key import Key
-from utils import check_if_power_of_two
+from utils import check_if_power_of_two, rescale_without_level
 
 
 class Cipher:
     M: int
-    integer_scale: int
-    decimal_scale: int
     encoder: Encoder
     key: Key
 
-    def __init__(self, M: int, integer_scale: int, decimal_scale: int) -> None:
+    def __init__(self, M: int, q0: int, delta: int) -> None:
         assert check_if_power_of_two(M), "M must be a power of two"
-        assert decimal_scale > 0, "scale must be positive"
+        assert q0 > 0, "modulo q0 must be positive"
+        assert delta > 0, "delta must be positive"
 
         self.M = M
-        self.integer_scale = integer_scale
-        self.decimal_scale = decimal_scale
-        self.encoder = Encoder(M, decimal_scale)
-        self.key = Key(M, integer_scale)
+        self.encoder = Encoder(M, delta)
+        self.key = Key(M, q0)
 
     def encrypt(self, z: np.ndarray[Any, np.dtype[np.complex128]]) -> Tuple[polynomial.Polynomial, polynomial.Polynomial]:
         # Get public key
@@ -82,9 +79,10 @@ class Cipher:
         # Multiply p to ciphertext
         c = (B * p) % phi, (A * p) % phi
 
-        # TODO: Do rescaling
+        # Do rescaling
+        c_rescaled = rescale_without_level(c, self.encoder.delta)
 
-        return c
+        return c_rescaled
 
     def addCiphertext(self, c1: Tuple[polynomial.Polynomial, polynomial.Polynomial], c2: Tuple[polynomial.Polynomial, polynomial.Polynomial]) -> Tuple[polynomial.Polynomial, polynomial.Polynomial]:
         # Unpack ciphertexts

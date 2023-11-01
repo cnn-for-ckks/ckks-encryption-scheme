@@ -1,5 +1,6 @@
 import numpy as np
-from typing import Any
+from numpy import polynomial
+from typing import Any, Tuple
 
 
 def coordinate_wise_random_rounding(coordinates: np.ndarray[Any, np.dtype[np.float64]]) -> np.ndarray[Any, np.dtype[np.int64]]:
@@ -21,6 +22,29 @@ def coordinate_wise_random_rounding(coordinates: np.ndarray[Any, np.dtype[np.flo
     ]
 
     return np.array(int_coordinates, dtype=np.int64)
+
+
+def rescale_without_level(c: Tuple[polynomial.Polynomial, polynomial.Polynomial], delta: int) -> Tuple[polynomial.Polynomial, polynomial.Polynomial]:
+    # Unpack ciphertext
+    B, A = c
+
+    # Rescale
+    B_rescaled = polynomial.Polynomial(
+        coordinate_wise_random_rounding(
+            B.coef / delta
+        )
+    )
+    A_rescaled = polynomial.Polynomial(
+        coordinate_wise_random_rounding(
+            A.coef / delta
+        )
+    )
+
+    return B_rescaled, A_rescaled
+
+# TODO: Implement rescale_with_level
+
+# TODO: Implement rescale_with_residue_number
 
 
 def check_if_power_of_two(number: int) -> bool:
