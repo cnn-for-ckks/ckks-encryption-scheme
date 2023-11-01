@@ -45,10 +45,7 @@ class Key:
         )
 
         # Menghasilkan public key
-        BRaw = (-A * private_key + E) % phi
-        B = polynomial.Polynomial(
-            [coef for coef in BRaw]
-        )
+        B = (-A * private_key + E) % phi
 
         return B, A
 
@@ -71,9 +68,6 @@ class Key:
 
         # Menghasilkan evaluation key
         # TODO: Add big integer support
-        BRaw = (-A * private_key + E + private_key * private_key) % phi
-        B = polynomial.Polynomial(
-            [coef for coef in BRaw]
-        )
+        B = (-A * private_key + E + private_key * private_key) % phi
 
         return B, A
