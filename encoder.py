@@ -1,7 +1,7 @@
 import numpy as np
 from numpy.polynomial import polynomial
 from typing import Any
-from utils import check_if_power_of_two, coordinate_wise_random_rounding
+from utils import coordinate_wise_random_rounding
 
 
 class Encoder:
@@ -11,9 +11,6 @@ class Encoder:
     sigma_R_basis: np.ndarray[Any, np.dtype[np.complex128]]
 
     def __init__(self, M: int, delta: int) -> None:
-        assert check_if_power_of_two(M), "M must be a power of two"
-        assert delta > 0, "delta must be positive"
-
         self.M = M
         self.delta = delta
 

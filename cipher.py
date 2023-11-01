@@ -94,7 +94,10 @@ class Cipher:
 
         return c
 
-    def multCiphertext(self, c1: Tuple[polynomial.Polynomial, polynomial.Polynomial], c2: Tuple[polynomial.Polynomial, polynomial.Polynomial]) -> Tuple[polynomial.Polynomial, polynomial.Polynomial, polynomial.Polynomial]:
+    def multCiphertext(self, c1: Tuple[polynomial.Polynomial, polynomial.Polynomial], c2: Tuple[polynomial.Polynomial, polynomial.Polynomial]) -> Tuple[polynomial.Polynomial, polynomial.Polynomial]:
+        # Get evaluation key
+        BEva, AEva = self.key.evaluation_key
+
         # Unpack ciphertexts
         B1, A1 = c1
         B2, A2 = c2
@@ -106,10 +109,14 @@ class Cipher:
         )
 
         # Multiply ciphertexts
-        c = (B1 * B2) % phi, (B1 * A2 + A1 * B2) % phi, (A1 * A2) % phi
+        D0, D1, D2 = (B1 * B2) % phi, (B1 * A2 +
+                                       A1 * B2) % phi, (A1 * A2) % phi
 
-        # TODO: Do relinearization
+        # Do relinearization
+        D0Lin, D1Lin = D0 + ((D2 * BEva) % phi), D1 + ((D2 * AEva) % phi)
+        c = D0Lin, D1Lin
 
-        # TODO: Do rescaling
+        # Do rescaling
+        c_rescaled = rescale_without_level(c, self.encoder.delta)
 
-        return c
+        return c_rescaled

@@ -35,7 +35,7 @@ if __name__ == "__main__":
     B2, A2 = c2
     print(f"c2: ({B2}, {A2})")
 
-    cOperation = cipher.multPlaintext(c1, p2)
+    cOperation = cipher.multCiphertext(c1, c2)
     BOperation, AOperation = cOperation
     print(f"cOperation: ({BOperation}, {AOperation})")
 
