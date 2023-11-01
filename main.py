@@ -4,16 +4,7 @@ from cipher import Cipher
 if __name__ == "__main__":
     np.random.seed(42)
 
-    cipher = Cipher(M=8, q0=2**16, delta=2**32)
-
-    BPublic, APublic = cipher.key.public_key
-    print(f"public key: ({BPublic}, {APublic})")
-
-    private_key = cipher.key.private_key
-    print(f"private key: {private_key}")
-
-    # Border
-    print()
+    cipher = Cipher(M=8, q0=2**16, delta=2**24)
 
     p1 = np.array([3 + 4j, 2 - 1j], dtype=np.complex128)
     print(f"p1: {p1}")
@@ -22,31 +13,28 @@ if __name__ == "__main__":
     print(f"p2: {p2}")
 
     pOperation = p1 * p2
-    print(f"pOperation: {pOperation}")
+    print(f"p1 * p2: {pOperation}")
 
     # Border
     print()
 
     c1 = cipher.encrypt(p1)
-    B1, A1 = c1
-    print(f"c1: ({B1}, {A1})")
+    print(f"enc(p1): ({c1[0]}, {c1[1]})")
 
     c2 = cipher.encrypt(p2)
-    B2, A2 = c2
-    print(f"c2: ({B2}, {A2})")
+    print(f"enc(p2): ({c2[0]}, {c2[1]})")
 
     cOperation = cipher.multCiphertext(c1, c2)
-    BOperation, AOperation = cOperation
-    print(f"cOperation: ({BOperation}, {AOperation})")
+    print(f"enc(p1) * enc(p2): ({cOperation[0]}, {cOperation[1]})")
 
     # Border
     print()
 
     p1_deciphered = cipher.decrypt(c1)
-    print(f"p1 deciphered: {p1_deciphered}")
+    print(f"dec(enc(p1)): {p1_deciphered}")
 
     p2_deciphered = cipher.decrypt(c2)
-    print(f"p2 deciphered: {p2_deciphered}")
+    print(f"dec(enc(p2)): {p2_deciphered}")
 
     pOperation_deciphered = cipher.decrypt(cOperation)
-    print(f"pOperation deciphered: {pOperation_deciphered}")
+    print(f"dec(enc(p1) * enc(p2)): {pOperation_deciphered}")

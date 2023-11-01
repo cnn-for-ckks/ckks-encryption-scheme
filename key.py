@@ -52,7 +52,6 @@ class Key:
 
         return B, A
 
-    # TODO: Add big integer support
     def generate_evaluation_key(self, private_key: polynomial.Polynomial) -> Tuple[polynomial.Polynomial, polynomial.Polynomial]:
         # Menghasilkan evaluation key
         N = self.M // 2
@@ -71,6 +70,7 @@ class Key:
         )
 
         # Menghasilkan evaluation key
+        # TODO: Add big integer support
         BRaw = (-A * private_key + E + private_key * private_key) % phi
         B = polynomial.Polynomial(
             [coef for coef in BRaw]
