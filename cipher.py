@@ -1,4 +1,3 @@
-from re import A
 import numpy as np
 from numpy.polynomial import polynomial
 from typing import Any, Tuple
@@ -9,19 +8,20 @@ from utils import check_if_power_of_two
 
 class Cipher:
     M: int
-    scale: int
+    integer_scale: int
+    decimal_scale: int
     encoder: Encoder
     key: Key
 
-    def __init__(self, M: int, scale: int, coef_size: int) -> None:
+    def __init__(self, M: int, integer_scale: int, decimal_scale: int) -> None:
         assert check_if_power_of_two(M), "M must be a power of two"
-        assert scale > 0, "scale must be positive"
-        assert coef_size > 0, "coef_size must be positive"
+        assert decimal_scale > 0, "scale must be positive"
 
         self.M = M
-        self.scale = scale
-        self.encoder = Encoder(M, scale)
-        self.key = Key(M, coef_size)
+        self.integer_scale = integer_scale
+        self.decimal_scale = decimal_scale
+        self.encoder = Encoder(M, decimal_scale)
+        self.key = Key(M, integer_scale)
 
     def encrypt(self, z: np.ndarray[Any, np.dtype[np.complex128]]) -> Tuple[polynomial.Polynomial, polynomial.Polynomial]:
         # Get public key

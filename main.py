@@ -4,7 +4,16 @@ from cipher import Cipher
 if __name__ == "__main__":
     np.random.seed(42)
 
-    cipher = Cipher(M=8, scale=2**8, coef_size=2**8)
+    cipher = Cipher(M=8, integer_scale=2**8, decimal_scale=2**8)
+
+    BPublic, APublic = cipher.key.public_key
+    print(f"public key: ({BPublic}, {APublic})")
+
+    private_key = cipher.key.private_key
+    print(f"private key: {private_key}")
+
+    # Border
+    print()
 
     p1 = np.array([3 + 4j, 2 - 1j], dtype=np.complex128)
     print(f"p1: {p1}")

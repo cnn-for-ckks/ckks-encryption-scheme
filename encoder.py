@@ -6,16 +6,16 @@ from utils import check_if_power_of_two, coordinate_wise_random_rounding
 
 class Encoder:
     M: int
-    scale: int
+    decimal_scale: int
     xi: np.complex128
     sigma_R_basis: np.ndarray[Any, np.dtype[np.complex128]]
 
-    def __init__(self, M: int, scale: int) -> None:
+    def __init__(self, M: int, decimal_scale: int) -> None:
         assert check_if_power_of_two(M), "M must be a power of two"
-        assert scale > 0, "scale must be positive"
+        assert decimal_scale > 0, "decimal scale must be positive"
 
         self.M = M
-        self.scale = scale
+        self.decimal_scale = decimal_scale
 
         # Atribut xi merupakan M-th root of unity yang akan digunakan sebagai basis perhitungan
         self.xi = np.exp(2 * np.pi * 1j / M)
@@ -98,7 +98,7 @@ class Encoder:
     def encode(self, z: np.ndarray[Any, np.dtype[np.complex128]]) -> polynomial.Polynomial:
         # Melakukan encoding dari vector ke polynomial
         pi_z = self.pi_inverse(z)
-        scaled_pi_z = np.array(self.scale * pi_z, dtype=np.complex128)
+        scaled_pi_z = np.array(self.decimal_scale * pi_z, dtype=np.complex128)
         sigma_R_discretization = self.sigma_R_discretization(scaled_pi_z)
         raw_p = self.sigma_inverse(sigma_R_discretization)
 
@@ -110,7 +110,8 @@ class Encoder:
 
     def decode(self, p: polynomial.Polynomial) -> np.ndarray[Any, np.dtype[np.complex128]]:
         # Melakukan decoding dari polynomial ke vector
-        coefficients = np.array(p.coef / self.scale, dtype=np.complex128)
+        coefficients = np.array(
+            p.coef / self.decimal_scale, dtype=np.complex128)
         rescaled_p = polynomial.Polynomial(coefficients)
         z = self.sigma(rescaled_p)
         pi_z = self.pi(z)

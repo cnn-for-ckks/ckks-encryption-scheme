@@ -6,16 +6,16 @@ from utils import check_if_power_of_two, coordinate_wise_random_rounding
 
 class Key:
     M: int
-    coef_size: int
+    integer_scale: int
     private_key: polynomial.Polynomial
     public_key: Tuple[polynomial.Polynomial, polynomial.Polynomial]
 
-    def __init__(self, M: int, coef_size: int) -> None:
+    def __init__(self, M: int, integer_scale: int) -> None:
         assert check_if_power_of_two(M), "M must be a power of two"
-        assert coef_size > 0, "coef_size must be positive"
+        assert integer_scale > 0, "integer scale must be positive"
 
         self.M = M
-        self.coef_size = coef_size
+        self.integer_scale = integer_scale
         self.private_key = self.generate_private_key()
         self.public_key = self.generate_public_key(self.private_key)
 
@@ -23,15 +23,15 @@ class Key:
         N = self.M // 2
 
         # Menghasilkan private key
-        coef = np.random.randint(-self.coef_size, self.coef_size, N)
+        coef = np.random.randint(0, self.integer_scale, N)
         return polynomial.Polynomial(coef)
 
     def generate_public_key(self, private_key: polynomial.Polynomial) -> Tuple[polynomial.Polynomial, polynomial.Polynomial]:
         # Menghasilkan public key
         N = self.M // 2
 
-        # Menghasilkan public key
-        coefA = np.random.randint(-self.coef_size, self.coef_size, N)
+        # Menghasilkan random polynomial
+        coefA = np.random.randint(0, self.integer_scale, N)
         A = polynomial.Polynomial(coefA)
 
         # Menghasilkan noise
@@ -47,3 +47,25 @@ class Key:
         B = (-A * private_key + E) % phi
 
         return B, A
+
+    def generate_evaluation_key(self, private_key: polynomial.Polynomial) -> polynomial.Polynomial:
+        # Menghasilkan evaluation key
+        N = self.M // 2
+
+        # Menghasilkan random polynomial
+        coefA = np.random.randint(0, self.integer_scale, N)
+        A = polynomial.Polynomial(coefA)
+
+        # Menghasilkan noise
+        coefE = coordinate_wise_random_rounding(np.random.normal(0, 1, N))
+        E = polynomial.Polynomial(coefE)
+
+        # Menghasilkan phi
+        phi = polynomial.Polynomial(
+            [1 if i == 0 or i == N else 0 for i in range(N + 1)]
+        )
+
+        # Menghasilkan evaluation key
+        B = (-A * private_key + E + private_key * private_key) % phi
+
+        return B
