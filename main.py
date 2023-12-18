@@ -4,7 +4,7 @@ from cipher import Cipher
 if __name__ == "__main__":
     np.random.seed(42)
 
-    cipher = Cipher(M=8, q0=2**16, delta=2**24)
+    cipher = Cipher(M=8, P=16, q0=2**16, delta=2**24)
 
     p1 = np.array([3 + 4j, 2 - 1j], dtype=np.complex128)
     print(f"p1: {p1}")

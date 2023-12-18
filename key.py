@@ -6,25 +6,32 @@ from utils import coordinate_wise_random_rounding
 
 class Key:
     M: int
-    q0: int
+    P: int
+    q: int
+
     private_key: polynomial.Polynomial
     public_key: Tuple[polynomial.Polynomial, polynomial.Polynomial]
     evaluation_key: Tuple[polynomial.Polynomial, polynomial.Polynomial]
 
-    def __init__(self, M: int, q0: int) -> None:
-        assert q0 > 0, "modulo q0 must be positive"
+    def __init__(self, M: int, P: int, q: int) -> None:
+        assert q > 0, "modulo q must be positive"
 
         self.M = M
-        self.q0 = q0
+        self.q = q
+        self.P = P
+
         self.private_key = self.generate_private_key()
         self.public_key = self.generate_public_key(self.private_key)
-        self.evaluation_key = self.generate_evaluation_key(self.private_key)
+        self.evaluation_key = self.generate_evaluation_key(
+            self.private_key,
+            self.P
+        )
 
     def generate_private_key(self) -> polynomial.Polynomial:
         N = self.M // 2
 
         # Menghasilkan private key
-        coef = np.random.randint(0, self.q0, N)
+        coef = np.random.randint(0, self.q, N)
         return polynomial.Polynomial(coef)
 
     def generate_public_key(self, private_key: polynomial.Polynomial) -> Tuple[polynomial.Polynomial, polynomial.Polynomial]:
@@ -32,7 +39,7 @@ class Key:
         N = self.M // 2
 
         # Menghasilkan random polynomial
-        coefA = np.random.randint(0, self.q0, N)
+        coefA = np.random.randint(0, self.q, N)
         A = polynomial.Polynomial(coefA)
 
         # Menghasilkan noise
@@ -49,12 +56,12 @@ class Key:
 
         return B, A
 
-    def generate_evaluation_key(self, private_key: polynomial.Polynomial) -> Tuple[polynomial.Polynomial, polynomial.Polynomial]:
+    def generate_evaluation_key(self, private_key: polynomial.Polynomial, P: int) -> Tuple[polynomial.Polynomial, polynomial.Polynomial]:
         # Menghasilkan evaluation key
         N = self.M // 2
 
         # Menghasilkan random polynomial
-        coefA = np.random.randint(0, self.q0, N)
+        coefA = np.random.randint(0, self.q, N)
         A = polynomial.Polynomial(coefA)
 
         # Menghasilkan noise
@@ -67,7 +74,7 @@ class Key:
         )
 
         # Menghasilkan evaluation key
-        # TODO: Add big integer support
-        B = (-A * private_key + E + private_key * private_key) % phi
+        # With big integer support
+        B = (-A * private_key + E + P * private_key * private_key) % phi
 
         return B, A

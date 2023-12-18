@@ -8,17 +8,20 @@ from utils import check_if_power_of_two, rescale_without_level
 
 class Cipher:
     M: int
+    P: int
+
     encoder: Encoder
     key: Key
 
-    def __init__(self, M: int, q0: int, delta: int) -> None:
+    def __init__(self, M: int, P: int, q0: int, delta: int) -> None:
         assert check_if_power_of_two(M), "M must be a power of two"
         assert q0 > 0, "modulo q0 must be positive"
         assert delta > 0, "delta must be positive"
 
         self.M = M
+        self.P = P
         self.encoder = Encoder(M, delta)
-        self.key = Key(M, q0)
+        self.key = Key(M, P, q0)  # Asumsi q = q0
 
     def encrypt(self, z: np.ndarray[Any, np.dtype[np.complex128]]) -> Tuple[polynomial.Polynomial, polynomial.Polynomial]:
         # Get public key
@@ -113,8 +116,9 @@ class Cipher:
                                        A1 * B2) % phi, (A1 * A2) % phi
 
         # Do relinearization
-        # TODO: Add big integer support
-        D0Lin, D1Lin = D0 + ((D2 * BEva) % phi), D1 + ((D2 * AEva) % phi)
+        # With big integer support
+        D0Lin, D1Lin = D0 + ((D2 * BEva / self.P) %
+                             phi), D1 + ((D2 * AEva / self.P) % phi)
         c = D0Lin, D1Lin
 
         # Do rescaling
