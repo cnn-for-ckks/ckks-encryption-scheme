@@ -44,8 +44,6 @@ def rescale_without_level(c: Tuple[polynomial.Polynomial, polynomial.Polynomial]
 
 # TODO: Implement rescale_with_level
 
-# TODO: Implement rescale_with_residue_number
-
 
 def check_if_power_of_two(number: int) -> bool:
     return number & (number - 1) == 0 and number > 2

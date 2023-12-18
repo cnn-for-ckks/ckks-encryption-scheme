@@ -26,11 +26,11 @@ class Encoder:
         matrix = np.array([], dtype=np.complex128).reshape(0, N)
 
         for i in range(N):
-            root = self.xi ** (2 * i + 1)
+            root = np.complex128(pow(self.xi, 2 * i + 1))
             row = np.array([], dtype=np.complex128)
 
             for j in range(N):
-                row = np.append(row, root ** j)
+                row = np.append(row, np.complex128(pow(root, j)))
 
             matrix = np.vstack([matrix, row])
 
@@ -53,7 +53,7 @@ class Encoder:
 
         # Mengaplikasikan polynomial ke M-th root of unity
         for i in range(N):
-            root = self.xi ** (2 * i + 1)
+            root = np.complex128(pow(self.xi, 2 * i + 1))
             output = np.complex128(p(root))
 
             # Imajiner bernilai mendekati 0 (masih compliance terhadap np.allclose)
